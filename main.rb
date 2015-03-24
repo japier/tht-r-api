@@ -8,11 +8,13 @@ before do
   headers['Access-Control-Allow-Origin'] = 'http://localhost'
   headers['Access-Control-Allow-Headers'] = 'accept, authorization, origin'
   headers['Access-Control-Allow-Credentials'] = 'true'
+  @body = JSON.parse(request.body.read)
 end
 def check_signature signature
   signature == "ot_35"
 end
 get '/' do
+  
 	"Welcome to Sorgocom"
 end
 get '/login/:user' do
@@ -21,14 +23,17 @@ get '/login/:user' do
 end
 post '/login' do
   return "Bad signature" unless params['firma'] == "ot_35"
-  begin 
-    Login.create(:fk_usr => params['fk_usr'], :passwd => params['passwd'], :nickname => params['nickname'])
-  rescue
-    "Error on create user"
+  begin
+    #@body['fk_usr']
+
+    #Login.create(:fk_usr => @body['fk_usr'], :passwd => @body['passwd'], :nickname => @body['nickname'])
+  rescue => e
+    e.message
+    e.backtrace
   end
   
 end
-get '/cliente/' do 
+get '/cliente/' do
 	@categories = Cliente.all
 	@categories.to_json
 end
